@@ -41,8 +41,8 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     
     // audio setup
-    sampleRate 	= 44100; /* Sampling Rate */
-    bufferSize	= 512; /* Buffer Size. you have to fill this buffer with sound using the for loop in the audioOut method */
+    sampleRate 	= 44100;
+    bufferSize	= 512;
     
     ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
     
@@ -50,7 +50,7 @@ void ofApp::setup(){
     ofEnableAlphaBlending();
     ofEnableSmoothing();
     
-    ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4); /* this has to happen at the end of setup - it switches on the DAC */
+    ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4);
     
     // graphics setup
     
@@ -67,25 +67,7 @@ void ofApp::setup(){
     
     radius_interval = (ofGetWidth()/2.0 - 50) / ring_count;
     
-    // composition setup
     init_composition();
-    
-    // gui setup
-    params.add(f1_cutoff.set("f1_cutoff", f1_cutoff, 1, 5000));
-    params.add(f1_res.set("f1_res", f1_res, 1, 30));
-    params.add(detune1.set("detune 1", detune1, 0, 50));
-    params.add(lfo1_freq.set("lfo1_freq", lfo1_freq, 0.01, 4));
-    params.add(lfo1_amt.set("lfo1_amt", lfo1_amt, 10, 1000));
-    
-    params.add(mod2_freq.set("mod2_freq", mod2_freq, 30, 8000));
-    params.add(mod2_index.set("mod2_index", mod2_index, 1, 10000));
-    params.add(mod3_freq.set("mod3_freq", mod3_freq, 30, 8000));
-    params.add(mod3_index.set("mod3_index", mod3_index, 1, 10000));
-    
-    params.add(trem_freq.set("trem freq", trem_freq, 0.01, 8));
-    params.add(trem_amt.set("trem amt", trem_amt, 0.0, 0.5));
-    
-    gui.setup(params);
     
     
 }
@@ -118,21 +100,13 @@ void ofApp::update(){
                 trigger = (dist >= inner && dist < outer);
             }
             if(trigger == 1) {
-//                p_notes[i][0] = person_notes[j];
-                
-                
-
                 if(!found) {
                     p_notes[i][0] = person_notes[j];
                     found = true;
                 }
-                
-//                break;
                 planet_people[i]++;
             }
         }
-//        cout << "ring " << i << " notes: " << p_notes[i].size() << endl;
-//        cout << " ----- " << endl;
         planet_triggers[i] = trigger;
         
     }
@@ -151,10 +125,6 @@ void ofApp::draw(){
     for(int i=0 ; i < people.size() ; i++) {
         draw_person(people[i]);
     }
-    
-//    gui.draw();
-    
-//    cout << "current: " << currentCount << endl;
     
 }
 

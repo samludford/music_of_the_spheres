@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxMaxim.h"
-#include "ofxGui.h"
 
 #define ATTACK_DEF 6000.0
 #define DECAY_DEF 1000.0
@@ -11,7 +10,7 @@
 
 #define PLANETS 8
 #define RAD_OFFSET 3
-#define PEOPLE 4
+#define PEOPLE 8
 #define PERSON_SIZE 15
 
 class ofApp : public ofBaseApp{
@@ -41,9 +40,6 @@ class ofApp : public ofBaseApp{
     int		bufferSize; /* buffer size */
     int		sampleRate;
     
-    ofxPanel gui;
-    ofParameterGroup params;
-    
     // composition
     
     double wave;
@@ -53,42 +49,42 @@ class ofApp : public ofBaseApp{
     double tempo {0.5};
     
     
-    // mercury (subtractive saw detuned oscillators lo-pass filter)
+    // mercury
     maxiOsc o1_1, o1_2;
     maxiFilter f1;
     maxiOsc lfo1;
     double o1_1_out, o1_2_out, s1, t1_out;
-    ofParameter<double> f1_cutoff {1000};
-    ofParameter<double> f1_res {15};
-    ofParameter<double> detune1 {1};
-    ofParameter<double> lfo1_freq {0.2};
-    ofParameter<double> lfo1_amt {200};
+    double f1_cutoff {1000};
+    double f1_res {15};
+    double detune1 {1};
+    double lfo1_freq {0.2};
+    double lfo1_amt {200};
     
     
-    // venus (fm)
+    // venus
     maxiOsc car2, mod2, mod3;;
-    ofParameter<double> mod2_freq {1066};
-    ofParameter<double> mod2_index {151};
-    ofParameter<double> mod3_freq {1186};
-    ofParameter<double> mod3_index {2751};
+    double mod2_freq {1066};
+    double mod2_index {151};
+    double mod3_freq {1186};
+    double mod3_index {2751};
     
-    // earth (glide sin)
+    // earth
     maxiOsc o3;
     maxiFilter glide;
     maxiOsc trem;
     
-    ofParameter<double> trem_freq {0.5};
-    ofParameter<double> trem_amt {0.4};
-    ofParameter<double> glide_cutoff {0.0007};
+    double trem_freq {0.5};
+    double trem_amt {0.4};
+    double glide_cutoff {0.0007};
     
     
     // mars
     // hires square
     maxiOsc o4_1, o4_2;
     maxiFilter f4;
-    ofParameter<double> detune4 {0.5};
-    ofParameter<double> f4_cutoff {6000};
-    ofParameter<double> f4_res {20};
+    double detune4 {0.5};
+    double f4_cutoff {6000};
+    double f4_res {20};
     
     double o4_1_out, o4_2_out;
     
