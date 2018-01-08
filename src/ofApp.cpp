@@ -135,6 +135,7 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
         
         currentCount += (int) clock.phasor(tempo);
         
+        // sum and scale the signal from the planets
         wave = (mercury() + venus() + earth() + mars() + saturn() + jupiter() + neptune() + uranus()) / 8.0;
 
         output[i*nChannels    ] = wave;
@@ -247,10 +248,8 @@ void ofApp::draw_person(ofPoint pos) {
 void ofApp::draw_rings() {
     
     // base ring color on planet notes
-    
     ofPushMatrix();
     ofPushStyle();
-
     ofTranslate(ofGetWidth()/2.0, ofGetHeight()/2.0);
     for(int i=ring_count-1 ; i >= 0 ; i--) {
         ofFill();
@@ -286,6 +285,7 @@ float ofApp::distance_from_center(ofPoint pos) {
 
 void ofApp::init_composition() {
     
+    // initialise notes at the beginning of the scale
     p_notes.resize(PLANETS);
     for(int i=0 ; i<PLANETS ; i++) {
         p_notes[i].push_back(0);
@@ -334,6 +334,10 @@ void ofApp::init_composition() {
 }
 
 double ofApp::mercury() {
+    
+    // two detuned saw waves passed through a resonant lopass filter
+    // whose cutoff is modulated by an LFO.
+    // sound passed through amp envelope
     o1_1_out = o1_1.sawn(scale[p_notes[0][0]]);
     o1_2_out = o1_2.sawn(scale[p_notes[0][0]] - detune1);
     s1 = f1.lores((o1_1_out + o1_2_out) * 0.5, f1_cutoff + lfo1.sinewave(lfo1_freq) * lfo1_amt, f1_res) * e1.adsr(1.0, planet_triggers[0]) * 0.6;
@@ -347,6 +351,8 @@ double ofApp::mercury() {
 }
 
 double ofApp::venus() {
+    // FM sound: carrier sinewave is f-modulated by another sine, which is in turn modulated by another
+    // sound passed through amp envelope
     double signal = car2.sinewave(scale[p_notes[1][0]] + (mod2.sinewave(mod2_freq + mod3.sinewave(mod3_freq)*mod3_index) * mod2_index)) * e2.adsr(1.0, planet_triggers[1]) * 0.3;
     if(planet_people[1]==1 || planet_people[1]==0) {
         return signal;
@@ -357,6 +363,8 @@ double ofApp::venus() {
 }
 
 double ofApp::earth() {
+    // Single sinewave oscillator with portamento
+    // sound passed through amp envelope
     double signal = o3.sinewave(glide.lopass(scale[p_notes[2][0]], glide_cutoff)) * e3.adsr(1.0, planet_triggers[2]);
     if(planet_people[2]==1 || planet_people[2]==0) {
         return signal;
@@ -367,6 +375,8 @@ double ofApp::earth() {
 }
 
 double ofApp::mars() {
+    // subtractive: one saw and one square detuned, passed through a resonant highpass filter
+    // sound passed through amp envelope
     o4_1_out = o4_1.square(scale[p_notes[3][0]]);
     o4_2_out = o4_2.sawn(scale[p_notes[3][0]] - detune4);
     double signal = f4.hires((o4_1_out + o4_2_out) * 0.5, 1000.0, 10) * e4.adsr(1.0, planet_triggers[3]) * 0.1;
@@ -380,6 +390,8 @@ double ofApp::mars() {
 }
 
 double ofApp::saturn() {
+    // simple triangle wave passed through resonant low pass filter
+    // sound passed through amp envelope
     double signal = f5.lores(o5.triangle(scale[p_notes[4][0]]), 500, 20) * e5.adsr(1.0, planet_triggers[4]) * 0.4;
     if(planet_people[4]==1 || planet_people[4]==0) {
         return signal;
@@ -390,6 +402,9 @@ double ofApp::saturn() {
 }
 
 double ofApp::jupiter() {
+    // two detuned saw waves passed through noth low pass filter and hi pass filters
+    // filter cutoff modulated by lfo
+    // sound passed through amp envelope
     o6_1_out = o6_1.sawn(scale[p_notes[5][0]]);
     o6_2_out = o6_2.sawn(scale[p_notes[5][0]] - detune5);
     double ct = f6_cutoff + lfo6.sinewave(0.3) * 1000;
@@ -404,6 +419,8 @@ double ofApp::jupiter() {
 }
 
 double ofApp::neptune() {
+    // gliding single squarewave with vibrato passed through resonant low pass filter
+    // sound passed through amp envelope
     double signal = f7.lores(o7.square(glide7.lopass(scale[p_notes[6][0]],0.001) + lfo7.sinewave(4) * 0.8), 2000, 10) * e7.adsr(1.0, planet_triggers[6]) * 0.15;
     if(planet_people[6]==1 || planet_people[6]==0) {
         return signal;
@@ -414,6 +431,8 @@ double ofApp::neptune() {
 }
 
 double ofApp::uranus() {
+    // single square wave
+    // sound passed through amp envelope
     double signal = o8.square(scale[p_notes[7][0]]) * e8.adsr(1.0, planet_triggers[7]) * 0.1;
     if(planet_people[7]==1 || planet_people[7]==0) {
         return signal;
